@@ -1,5 +1,5 @@
 #! /bin/bash
-yum install httpd git -
+yum install httpd git -y
 systemctl start httpd
 systemctl status httpd
 cd /var/www/html
