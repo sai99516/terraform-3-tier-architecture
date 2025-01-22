@@ -1,7 +1,8 @@
 #! /bin/bash
 yum install httpd git -y
 systemctl start httpd
-systemctl status httpd
+systemctl enable httpd
 cd /var/www/html
-git clone https://github.com/karishma1521success/swiggy-clone.git
-mv swiggy-clone/* .
+git clone https://github.com/sai99516/terraform-3-tier-architecture.git
+mv terraform-3-tier-architecture/* .
+
