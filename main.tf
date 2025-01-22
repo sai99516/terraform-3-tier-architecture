@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "saibucket"  # Change this to your new bucket name
+    bucket = "saibuket"  # Corrected to your actual bucket name
     key    = "terraform.tfstate"
     region = "us-east-1"  # Change region if necessary
   }
@@ -97,7 +97,7 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-# Create Web layber route table
+# Create Web layer route table
 resource "aws_route_table" "web-rt" {
   vpc_id = aws_vpc.my-vpc.id
 
@@ -122,11 +122,9 @@ resource "aws_route_table_association" "b" {
   route_table_id = aws_route_table.web-rt.id
 }
 
-# Add other resources as needed (Instances, Security Groups, ALB, etc.)
-
-# AWS S3 Bucket resource (replace with your actual bucket name)
+# AWS S3 Bucket resource (updated to your bucket name)
 resource "aws_s3_bucket" "example" {
-  bucket = "saibucket"  # Updated bucket name
+  bucket = "saibuket"  # Corrected bucket name
 }
 
 resource "aws_s3_bucket_versioning" "versioning_example" {
