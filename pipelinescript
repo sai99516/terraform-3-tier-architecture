@@ -1,35 +1,59 @@
 pipeline {
-    agent any 
+    agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('accesskey')
-        AWS_SECRET_ACCESS_KEY = credentials('secretkey')
+        AWS_ACCESS_KEY_ID     = credentials('aws-access-key')  // Secure Jenkins credential for AWS Access Key
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')  // Secure Jenkins credential for AWS Secret Key
+        PATH                  = "${env.PATH};C:\\terraform" // Add Terraform to PATH explicitly for Jenkins
     }
-    
+
     stages {
-        stage('checkout') {
+        stage('Check Terraform Version') {
             steps {
-                git 'https://github.com/devopsbyraham/terraform-project.git'
+                // Check if Terraform is available in the PATH
+                powershell 'terraform --version'
             }
         }
-        stage('init') {
+
+        stage('Checkout') {
             steps {
-                sh 'terraform init'
+                // Cloning the GitHub repository containing the Terraform code
+                git url: 'https://github.com/sai99516/terraform-3-tier-architecture.git', credentialsId: 'github-credentials-id'
             }
         }
-        stage('validate') {
+
+        stage('Terraform Init') {
             steps {
-                sh 'terraform validate'                
+                // Initializing Terraform
+                powershell 'terraform init'
             }
         }
-        stage('plan') {
+
+        stage('Terraform Validate') {
             steps {
-                sh 'terraform plan'
+                // Validating Terraform code
+                powershell 'terraform validate'
             }
         }
-        stage('action') {
+
+        stage('Terraform Plan') {
             steps {
-                sh 'terraform $action --auto-approve'
+                // Generating Terraform execution plan
+                powershell 'terraform plan -out=plan.out'
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                // Applying Terraform plan
+                powershell 'terraform apply -auto-approve'
+            }
+        }
+
+        stage('Run Shell Script') {
+            steps {
+                // Running a PowerShell script (Windows adjustment)
+                powershell '.\\create.ps1'  // Assuming create.sh is converted to create.ps1 for Windows
             }
         }
     }
