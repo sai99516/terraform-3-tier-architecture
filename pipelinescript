@@ -2,59 +2,68 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('aws-access-key')  // Secure Jenkins credential for AWS Access Key
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')  // Secure Jenkins credential for AWS Secret Key
-        PATH                  = "${env.PATH};C:\\terraform" // Add Terraform to PATH explicitly for Jenkins
+        AWS_ACCESS_KEY_ID     = 'AKIATBRPQCVVVAN2WETM'  // Directly setting the provided Access Key
+        AWS_SECRET_ACCESS_KEY = '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'  // Directly setting the provided Secret Key
+        PATH                  = "${env.PATH};C:\\terraform"  // Add Terraform to PATH explicitly for Jenkins
     }
 
     stages {
         stage('Check Terraform Version') {
             steps {
-                // Check if Terraform is available in the PATH
+                // Verify Terraform installation
                 powershell 'terraform --version'
             }
         }
 
-        stage('Checkout') {
+        stage('Checkout Repository') {
             steps {
-                // Cloning the GitHub repository containing the Terraform code
-                git url: 'https://github.com/sai99516/terraform-3-tier-architecture.git', credentialsId: 'github-credentials-id'
+                // Clone your GitHub repository securely
+                git url: 'https://github.com/sai99516/terraform-3-tier-architecture.git'
             }
         }
 
         stage('Terraform Init') {
             steps {
-                // Initializing Terraform
-                powershell 'terraform init'
+                // Initialize Terraform with your bucket details
+                powershell 'terraform init -backend-config="bucket=saibuket" -backend-config="key=terraform.tfstate" -backend-config="region=us-east-1"'
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                // Validating Terraform code
+                // Validate Terraform configuration
                 powershell 'terraform validate'
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                // Generating Terraform execution plan
+                // Generate Terraform execution plan
                 powershell 'terraform plan -out=plan.out'
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                // Applying Terraform plan
+                // Apply Terraform configuration
                 powershell 'terraform apply -auto-approve'
             }
         }
 
         stage('Run Shell Script') {
             steps {
-                // Running a PowerShell script (Windows adjustment)
-                powershell '.\\create.ps1'  // Assuming create.sh is converted to create.ps1 for Windows
+                // Run a shell script to perform additional setup tasks
+                powershell '.\\create.ps1'  // Adjusted for Windows compatibility
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution complete!'
+        }
+        failure {
+            echo 'Pipeline failed. Check the logs for details.'
         }
     }
 }
