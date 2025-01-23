@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = 'AKIATBRPQCVVVAN2WETM'  // Directly setting the provided Access Key
-        AWS_SECRET_ACCESS_KEY = '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'  // Directly setting the provided Secret Key
+        AWS_ACCESS_KEY_ID     = 'key'  // Directly setting the provided Access Key
+        AWS_SECRET_ACCESS_KEY = 'key'  // Directly setting the provided Secret Key
         PATH                  = "${env.PATH};C:\\terraform"  // Add Terraform to PATH explicitly for Jenkins
     }
 
